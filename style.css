@@ -1,10 +1,11 @@
+/* BASE */
 body {
     margin: 0;
     padding: 0;
-    height: 100%;
+    min-height: 100vh;
     font-family: 'Roboto', sans-serif;
     background: #f5f7fa;
-    transition: 0.3s;
+    transition: 0.3s ease;
 }
 
 /* VANTA BACKGROUND */
@@ -17,7 +18,7 @@ body {
     z-index: 0;
 }
 
-/* LOGIN WRAPPER */
+/* WRAPPERS */
 .login-wrapper {
     position: relative;
     z-index: 2;
@@ -37,7 +38,6 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
-/* FORM */
 .login-card .form-control {
     border-radius: 10px;
     padding: 12px;
@@ -75,19 +75,31 @@ body {
     padding: 8px 12px;
 }
 
+/* PAGE TITLE */
+.page-title {
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* CHART FIX */
+.chart-container {
+    width: 100%;
+    max-width: 450px;
+    margin: auto;
+}
+
+/* IMPORTANT: canvas must have height */
+#taskChart {
+    width: 100% !important;
+    height: 300px !important;
+}
+
 /* RESPONSIVE */
 @media (max-width: 576px) {
     .login-card {
         width: 90%;
     }
-}
-
-/* CHART */
-.chart-container {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    margin: 0 auto;
 }
 
 /* DARK MODE */
@@ -96,24 +108,20 @@ body.dark-mode {
     color: white;
 }
 
-/* login card ikut dark */
 body.dark-mode .login-card {
     background: rgba(30, 41, 59, 0.95);
     color: white;
 }
 
-/* card */
 body.dark-mode .card {
     background: #1e293b;
     color: white;
 }
 
-/* navbar */
 body.dark-mode .navbar {
     background: #111827 !important;
 }
 
-/* muted text */
 body.dark-mode .text-muted {
     color: #cbd5e1 !important;
 }

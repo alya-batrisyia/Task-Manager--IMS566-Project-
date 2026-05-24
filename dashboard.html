@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="style.css">
+
+<!-- Chart.js (LOAD ONCE ONLY) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<div class="container">
+
+<a class="navbar-brand" href="#">
+<i class="bi bi-list-task"></i> Task Manager
+</a>
+
+<div class="collapse navbar-collapse">
+<ul class="navbar-nav ms-auto">
+
+<li class="nav-item"><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
+<li class="nav-item"><a class="nav-link" href="tasks.html">Tasks</a></li>
+<li class="nav-item"><a class="nav-link" href="categories.html">Categories</a></li>
+<li class="nav-item"><a class="nav-link" href="logout.html">Logout</a></li>
+
+</ul>
+</div>
+
+</div>
+</nav>
+
+<!-- CONTENT -->
+<div class="container mt-4">
+
+<h2 class="page-title">Dashboard Overview</h2>
+
+<!-- STATS -->
+<div class="row">
+
+<div class="col-md-4 mb-3">
+<div class="card bg-primary text-white">
+<div class="card-body">
+<h3 id="totalTasks">0</h3>
+<p>Total Tasks</p>
+</div>
+</div>
+</div>
+
+<div class="col-md-4 mb-3">
+<div class="card bg-success text-white">
+<div class="card-body">
+<h3 id="completedTasks">0</h3>
+<p>Completed</p>
+</div>
+</div>
+</div>
+
+<div class="col-md-4 mb-3">
+<div class="card bg-warning text-dark">
+<div class="card-body">
+<h3 id="pendingTasks">0</h3>
+<p>Pending</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- CHART -->
+<div class="card shadow mt-4">
+<div class="card-body">
+<h5 class="text-center mb-3">Task Status Chart</h5>
+
+<div style="height:300px;">
+<canvas id="taskChart"></canvas>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<script>
+let chart;
+
+// GET DATA
+function getTasks() {
+    return JSON.parse(localStorage.getItem("tasks")) || [];
+}
+
+// UPDATE DASHBOARD
+function updateDashboard() {
+
+    const tasks = getTasks();
+
+    const total = tasks.length;
+    const completed = tasks.filter(t => t.status === "Completed").length;
+    const pending = tasks.filter(t => t.status === "Pending").length;
+
+    document.getElementById("totalTasks").innerText = total;
+    document.getElementById("completedTasks").innerText = completed;
+    document.getElementById("pendingTasks").innerText = pending;
+
+    updateChart(completed, pending);
+}
+
+// UPDATE CHART 
+function updateChart(completed, pending) {
+
+    const ctx = document.getElementById("taskChart");
+
+    if (chart) {
+        chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ["Completed", "Pending"],
+            datasets: [{
+                data: [completed, pending],
+                backgroundColor: ["#198754", "#ffc107"]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+// INIT
+window.addEventListener("load", updateDashboard);
+
+// AUTO SYNC bila balik tab
+window.addEventListener("focus", updateDashboard);
+
+// AUTO SYNC dari page lain (tasks.html)
+window.addEventListener("storage", function(e){
+    if (e.key === "tasks") {
+        updateDashboard();
+    }
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
