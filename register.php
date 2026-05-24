@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+<div class="row justify-content-center">
+
+<div class="col-md-5">
+
+<div class="card p-4 shadow">
+
+<h3 class="text-center">Register Account</h3>
+
+<form id="registerForm">
+
+<label>Full Name</label>
+<input type="text" id="name" class="form-control mb-2" required>
+
+<label>Email (siti@gmail.com.my)</label>
+<input type="email" id="email" class="form-control mb-2" required>
+
+<label>Password</label>
+<input type="password" id="password" class="form-control mb-3" required>
+
+<button class="btn btn-success w-100">Register</button>
+
+</form>
+
+<div class="text-center mt-3">
+<a href="index.php">Back to Login</a>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    let name = document.getElementById("name").value;
+    let emailInput = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    let email = emailInput;
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // check duplicate email
+    let exists = users.find(u => u.email === email);
+
+    if(exists){
+        alert("Email already registered!");
+        return;
+    }
+
+    users.push({
+        name: name,
+        email: email,
+        password: password
+    });
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Register successful!");
+    window.location.href = "index.php";
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Task Manager - Login</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div id="vanta-bg"></div>
+
+<!-- THEME BUTTON -->
+<button id="themeToggle" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-3">
+🌙
+</button>
+
+<!-- LOGIN WRAPPER -->
+<div class="login-wrapper">
+
+<div class="card shadow p-4 login-card">
+
+    <div class="text-center mb-3">
+        <i class="bi bi-list-task fs-1 text-primary"></i>
+        <h3>Task Manager</h3>
+        <p class="text-muted">Login to continue</p>
+    </div>
+
+    <form id="loginForm">
+
+        <label class="form-label">Email</label>
+        <input type="text" id="email" class="form-control mb-3" placeholder="siti@gmail.com.my" required>
+
+        <label class="form-label">Password</label>
+        <input type="password" id="password" class="form-control mb-3" placeholder="Enter password" required>
+
+        <button class="btn btn-primary w-100" type="submit">
+            <i class="bi bi-box-arrow-in-right"></i> Login
+        </button>
+
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="register.php">Register Account</a>
+    </div>
+
+</div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- VANTA Background -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+
+<script>
+window.addEventListener("load", function () {
+
+    VANTA.CLOUDS({
+        el: "#vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        speed: 1.2
+    });
+
+});
+</script>
+
+<!-- LIGHT/DARK MODE -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const toggleBtn = document.getElementById("themeToggle");
+
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+        toggleBtn.innerHTML = "☀️";
+    }
+
+    toggleBtn.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            toggleBtn.innerHTML = "☀️";
+            localStorage.setItem("theme", "dark");
+        } else {
+            toggleBtn.innerHTML = "🌙";
+            localStorage.setItem("theme", "light");
+        }
+    });
+
+});
+</script>
+
+<!--LOGIN-->
+<script>
+window.addEventListener("DOMContentLoaded", function () {
+
+    document.getElementById("loginForm").addEventListener("submit", function(e){
+        e.preventDefault();
+
+        let email = document.getElementById("email").value.trim().toLowerCase();
+        let password = document.getElementById("password").value;
+
+        // AUTO ADD BEFORE CHECK
+        if (!email.includes("@")) {
+            email = email + "@gmail.com.my";
+        }
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        let userFound = users.find(u => u.email === email && u.password === password);
+
+        if(userFound){
+            alert("Login successful! Welcome " + userFound.name);
+
+            localStorage.setItem("loggedInUser", JSON.stringify(userFound));
+
+            window.location.href = "dashboard.php";
+        } else {
+            alert("Login failed. Please register first.");
+        }
+    });
+
+});
+</script>
+
+<!-- TASKS -->
+<script>
+window.addEventListener("DOMContentLoaded", function () {
+
+    let taskForm = document.getElementById("taskForm");
+    let taskTable = document.getElementById("taskTable");
+
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    let editIndex = document.getElementById("editIndex");
+    let formTitle = document.getElementById("formTitle");
+
+    function updateDashboard() {
+
+        let total = tasks.length;
+        let completed = tasks.filter(t => t.status === "Completed").length;
+        let pending = tasks.filter(t => t.status === "Pending").length;
+
+        localStorage.setItem("dashboardStats", JSON.stringify({
+            total,
+            completed,
+            pending
+        }));
+    }
+
+    function renderTasks() {
+
+        taskTable.innerHTML = "";
+
+        tasks.forEach((t, index) => {
+
+            taskTable.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${t.name}</td>
+                    <td>
+                        <span class="badge ${t.status === 'Completed' ? 'bg-success' : 'bg-warning text-dark'}">
+                            ${t.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="editTask(${index})">Edit</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        updateDashboard();
+    }
+
+    // ADD / UPDATE TASK
+    taskForm.addEventListener("submit", function(e){
+        e.preventDefault();
+
+        let name = document.getElementById("taskName").value;
+        let status = document.getElementById("taskStatus").value;
+
+        if(editIndex.value === "") {
+            tasks.push({ name, status });
+        } else {
+            tasks[editIndex.value] = { name, status };
+            editIndex.value = "";
+            formTitle.innerText = "Add Task";
+        }
+
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        taskForm.reset();
+        renderTasks();
+    });
+
+    // EDIT FUNCTION
+    window.editTask = function(index) {
+
+        let task = tasks[index];
+
+        document.getElementById("taskName").value = task.name;
+        document.getElementById("taskStatus").value = task.status;
+
+        editIndex.value = index;
+        formTitle.innerText = "Edit Task";
+    }
+
+    renderTasks();
+
+});
+</script>
+
+</body>
+</html>

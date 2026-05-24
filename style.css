@@ -1,0 +1,119 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    background: #f5f7fa;
+    transition: 0.3s;
+}
+
+/* VANTA BACKGROUND */
+#vanta-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* LOGIN WRAPPER */
+.login-wrapper {
+    position: relative;
+    z-index: 2;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* LOGIN CARD */
+.login-card {
+    width: 400px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* FORM */
+.login-card .form-control {
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.login-card .btn {
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 500;
+}
+
+/* NAVBAR */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* CARDS */
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+/* TABLE */
+.table td {
+    vertical-align: middle;
+}
+
+.table th {
+    text-align: center;
+}
+
+/* BADGE */
+.badge {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 576px) {
+    .login-card {
+        width: 90%;
+    }
+}
+
+/* CHART */
+.chart-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+/* DARK MODE */
+body.dark-mode {
+    background: #0f172a;
+    color: white;
+}
+
+/* login card ikut dark */
+body.dark-mode .login-card {
+    background: rgba(30, 41, 59, 0.95);
+    color: white;
+}
+
+/* card */
+body.dark-mode .card {
+    background: #1e293b;
+    color: white;
+}
+
+/* navbar */
+body.dark-mode .navbar {
+    background: #111827 !important;
+}
+
+/* muted text */
+body.dark-mode .text-muted {
+    color: #cbd5e1 !important;
+}
